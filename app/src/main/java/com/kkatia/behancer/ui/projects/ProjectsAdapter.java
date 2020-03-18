@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.kkatia.behancer.R;
 import com.kkatia.behancer.data.model.project.Project;
+import com.kkatia.behancer.databinding.ProjectBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,12 @@ public class ProjectsAdapter  extends RecyclerView.Adapter<ProjectsHolder> {
     public ProjectsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.li_projects, parent, false);
-        return new ProjectsHolder(view);
+
+        ProjectBinding binding=
+        ProjectBinding.inflate(inflater,parent,false);
+
+        return new ProjectsHolder(binding);
+//        return new ProjectsHolder(view);
     }
 
     @Override

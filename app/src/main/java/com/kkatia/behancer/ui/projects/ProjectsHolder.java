@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.kkatia.behancer.R;
 import com.kkatia.behancer.data.model.project.Project;
+import com.kkatia.behancer.databinding.ProjectBinding;
 import com.kkatia.behancer.utils.DateUtils;
 import com.squareup.picasso.Picasso;
 
@@ -13,36 +14,34 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ProjectsHolder extends RecyclerView.ViewHolder {
 
-    private static final int FIRST_OWNER_INDEX = 0;
+    static final int FIRST_OWNER_INDEX = 0;
 
-    private ImageView mImage;
-    private TextView mName;
-    private TextView mUsername;
-    private TextView mPublishedOn;
+    private ProjectBinding mProjectBinding;
 
-    public ProjectsHolder(View itemView) {
-        super(itemView);
-        mImage = itemView.findViewById(R.id.image);
-        mName = itemView.findViewById(R.id.tv_name);
-        mUsername = itemView.findViewById(R.id.tv_username);
-        mPublishedOn = itemView.findViewById(R.id.tv_published);
+    public ProjectsHolder(ProjectBinding binding) {
+        super(binding.getRoot());
+        mProjectBinding=binding;
     }
 
     public void bind(Project item, ProjectsAdapter.OnItemClickListener onItemClickListener) {
-        Picasso.get().load(item.getCover().getPhotoUrl())
-                .fit()
-                .into(mImage);
+        mProjectBinding.setProject(new ProjectsListItemViewModel(item));
+        mProjectBinding.setOnItemClickListener(onItemClickListener);
+        mProjectBinding.executePendingBindings();
 
-        mName.setText(item.getName());
-        mUsername.setText(item.getOwners().get(FIRST_OWNER_INDEX).getUsername());
-        mPublishedOn.setText(DateUtils.format(item.getPublishedOn()));
-
-        if (onItemClickListener != null) {
-            itemView.setOnClickListener(v -> onItemClickListener.onItemClick(
-                    item.getOwners()
-                            .get(FIRST_OWNER_INDEX)
-                            .getUsername()
-            ));
-        }
+//        Picasso.get().load(item.getCover().getPhotoUrl())
+//                .fit()
+//                .into(mImage);
+//
+//        mName.setText(item.getName());
+//        mUsername.setText(item.getOwners().get(FIRST_OWNER_INDEX).getUsername());
+//        mPublishedOn.setText(DateUtils.format(item.getPublishedOn()));
+//
+//        if (onItemClickListener != null) {
+//            itemView.setOnClickListener(v -> onItemClickListener.onItemClick(
+//                    item.getOwners()
+//                            .get(FIRST_OWNER_INDEX)
+//                            .getUsername()
+//            ));
+//        }
     }
 }
