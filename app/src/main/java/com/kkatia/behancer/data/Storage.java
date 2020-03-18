@@ -90,6 +90,19 @@ public class Storage {
         return response;
     }
 
+    public ProjectResponse getUserProjects(String username) {
+        List<Project> projects = mBehanceDao.getUserProjects(username);
+        for (Project project : projects) {
+            project.setCover(mBehanceDao.getCoverFromProject(project.getId()));
+            project.setOwners(mBehanceDao.getOwnersFromProject(project.getId()));
+        }
+
+        ProjectResponse response = new ProjectResponse();
+        response.setProjects(projects);
+
+        return response;
+    }
+
     public interface StorageOwner {
         Storage obtainStorage();
     }

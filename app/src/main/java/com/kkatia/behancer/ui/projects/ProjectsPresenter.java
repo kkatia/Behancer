@@ -1,14 +1,17 @@
 package com.kkatia.behancer.ui.projects;
 
+import com.arellomobile.mvp.InjectViewState;
 import com.kkatia.behancer.BuildConfig;
 import com.kkatia.behancer.common.BasePresenter;
+import com.kkatia.behancer.common.BaseView;
 import com.kkatia.behancer.data.Storage;
 import com.kkatia.behancer.utils.ApiUtils;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class ProjectsPresenter extends BasePresenter {
+@InjectViewState
+public class ProjectsPresenter extends BasePresenter<ProjectsView> {
     private ProjectsView mView;
     private Storage mStorage;
 

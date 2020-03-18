@@ -1,7 +1,6 @@
-package com.kkatia.behancer.ui.projects;
+package com.kkatia.behancer.ui.userprojects;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +14,6 @@ import com.kkatia.behancer.common.RefreshOwner;
 import com.kkatia.behancer.common.Refreshable;
 import com.kkatia.behancer.data.Storage;
 import com.kkatia.behancer.data.model.project.Project;
-import com.kkatia.behancer.ui.profile.ProfileActivity;
-import com.kkatia.behancer.ui.profile.ProfileFragment;
 
 import java.util.List;
 
@@ -25,31 +22,30 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ProjectsFragment extends PresenterFragment implements ProjectsView, Refreshable, ProjectsAdapter.OnItemClickListener {
+public class UserProjectsFragment extends PresenterFragment implements UserProjectsView, Refreshable {
 
+    private static String mUsername;
+    @InjectPresenter
+    UserProjectsPresenter mPresenter;
     private RecyclerView mRecyclerView;
     private RefreshOwner mRefreshOwner;
     private View mErrorView;
     private Storage mStorage;
-    private ProjectsAdapter mProjectsAdapter;
+    private UserProjectsAdapter mProjectsAdapter;
 
-   @InjectPresenter
-    ProjectsPresenter mPresenter;
+    public static UserProjectsFragment newInstance(String username) {
+        mUsername = username;
+        return new UserProjectsFragment();
+    }
 
-   @ProvidePresenter
-   ProjectsPresenter providePresenter(){
-       return new ProjectsPresenter(this,mStorage);
-   }
+    @ProvidePresenter
+    UserProjectsPresenter providePresenter() {
+        return new UserProjectsPresenter(this, mStorage);
+    }
 
-   @Override
-   protected ProjectsPresenter getPresenter() {
-       return mPresenter;
-   }
-
-
-
-    public static ProjectsFragment newInstance() {
-        return new ProjectsFragment();
+    @Override
+    protected UserProjectsPresenter getPresenter() {
+        return mPresenter;
     }
 
     @Override
@@ -84,16 +80,11 @@ public class ProjectsFragment extends PresenterFragment implements ProjectsView,
             getActivity().setTitle(R.string.projects);
         }
 
-        mProjectsAdapter = new ProjectsAdapter(this);
+        mProjectsAdapter = new UserProjectsAdapter();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mProjectsAdapter);
 
         onRefreshData();
-    }
-
-    @Override
-    public void onItemClick(String username) {
-        mPresenter.openProfileFragment(username);
     }
 
     @Override
@@ -105,7 +96,7 @@ public class ProjectsFragment extends PresenterFragment implements ProjectsView,
 
     @Override
     public void onRefreshData() {
-        mPresenter.getProjects();
+        mPresenter.getProjects(mUsername);
     }
 
     @Override
@@ -113,15 +104,6 @@ public class ProjectsFragment extends PresenterFragment implements ProjectsView,
         mErrorView.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
         mProjectsAdapter.addData(projects, true);
-    }
-
-    @Override
-    public void openProfileFragment(String username) {
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
-        Bundle args = new Bundle();
-        args.putString(ProfileFragment.PROFILE_KEY, username);
-        intent.putExtra(ProfileActivity.USERNAME_KEY, args);
-        startActivity(intent);
     }
 
     @Override

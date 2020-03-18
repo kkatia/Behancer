@@ -1,4 +1,4 @@
-package com.kkatia.behancer.ui.projects;
+package com.kkatia.behancer.ui.userprojects;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,28 +13,23 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
+public class UserProjectsAdapter extends RecyclerView.Adapter<UserProjectsHolder> {
 
     @NonNull
     private final List<Project> mProjects = new ArrayList<>();
-    private final OnItemClickListener mOnItemClickListener;
-
-    public ProjectsAdapter(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
-    }
 
     @NonNull
     @Override
-    public ProjectsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public UserProjectsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.li_projects, parent, false);
-        return new ProjectsHolder(view);
+        return new UserProjectsHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProjectsHolder holder, int position) {
+    public void onBindViewHolder(@NonNull UserProjectsHolder holder, int position) {
         Project project = mProjects.get(position);
-        holder.bind(project, mOnItemClickListener);
+        holder.bind(project);
     }
 
     @Override
@@ -50,8 +45,4 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
         notifyDataSetChanged();
     }
 
-    public interface OnItemClickListener {
-
-        void onItemClick(String username);
-    }
 }

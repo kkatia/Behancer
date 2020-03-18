@@ -5,37 +5,40 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.kkatia.behancer.R;
 import com.kkatia.behancer.common.PresenterFragment;
 import com.kkatia.behancer.common.RefreshOwner;
 import com.kkatia.behancer.common.Refreshable;
 import com.kkatia.behancer.data.Storage;
 import com.kkatia.behancer.data.model.user.User;
+import com.kkatia.behancer.ui.userprojects.UserProjectsFragment;
 import com.kkatia.behancer.utils.DateUtils;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class ProfileFragment  extends PresenterFragment<ProfilePresenter> implements ProfileView,Refreshable {
+public class ProfileFragment extends PresenterFragment implements ProfileView, Refreshable {
 
     public static final String PROFILE_KEY = "PROFILE_KEY";
-
+    @InjectPresenter
+    ProfilePresenter mPresenter;
     private RefreshOwner mRefreshOwner;
     private View mErrorView;
     private View mProfileView;
     private String mUsername;
     private Storage mStorage;
-
-    private ProfilePresenter mPresenter;
-
     private ImageView mProfileImage;
     private TextView mProfileName;
     private TextView mProfileCreatedOn;
     private TextView mProfileLocation;
+    private Button mOpenUserProjectsButton;
 
     public static ProfileFragment newInstance(Bundle args) {
         ProfileFragment fragment = new ProfileFragment();
@@ -44,6 +47,10 @@ public class ProfileFragment  extends PresenterFragment<ProfilePresenter> implem
         return fragment;
     }
 
+    @ProvidePresenter
+    ProfilePresenter providePresenter() {
+        return new ProfilePresenter(this, mStorage);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -67,6 +74,8 @@ public class ProfileFragment  extends PresenterFragment<ProfilePresenter> implem
         mProfileName = view.findViewById(R.id.tv_display_name_details);
         mProfileCreatedOn = view.findViewById(R.id.tv_created_on_details);
         mProfileLocation = view.findViewById(R.id.tv_location_details);
+
+        mOpenUserProjectsButton = view.findViewById(R.id.btnUserProjects);
     }
 
     @Override
@@ -80,7 +89,6 @@ public class ProfileFragment  extends PresenterFragment<ProfilePresenter> implem
         if (getActivity() != null) {
             getActivity().setTitle(mUsername);
         }
-        mPresenter=new ProfilePresenter(this,mStorage);
         mProfileView.setVisibility(View.VISIBLE);
         onRefreshData();
     }
@@ -112,6 +120,13 @@ public class ProfileFragment  extends PresenterFragment<ProfilePresenter> implem
         mProfileName.setText(user.getDisplayName());
         mProfileCreatedOn.setText(DateUtils.format(user.getCreatedOn()));
         mProfileLocation.setText(user.getLocation());
+
+        mOpenUserProjectsButton.setOnClickListener(v -> {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, new UserProjectsFragment().newInstance(user.getUsername()))
+                    .addToBackStack(String.valueOf(UserProjectsFragment.class))
+                    .commit();
+        });
     }
 
     @Override

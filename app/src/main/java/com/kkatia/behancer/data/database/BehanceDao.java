@@ -63,4 +63,7 @@ public interface BehanceDao {
 
     @Query("select * from image")
     List<Image> getImages();
+
+   @Query("select * from project where name = :userName")
+    List<Project> getUserProjects(String userName);
 }

@@ -3,6 +3,7 @@ package com.kkatia.behancer.data.api;
 import com.kkatia.behancer.data.model.project.ProjectResponse;
 import com.kkatia.behancer.data.model.user.UserResponse;
 
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -19,4 +20,7 @@ public interface BehanceApi {
 
     @GET("v2/users/{username}")
     Single<UserResponse> getUserInfo(@Path("username") String username);
+
+    @GET("v2/users/{username}/projects")
+    Single<ProjectResponse> getUserProjects(@Path("username") String username);
 }
