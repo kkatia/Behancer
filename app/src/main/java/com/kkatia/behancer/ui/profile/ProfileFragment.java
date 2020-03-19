@@ -14,13 +14,18 @@ import com.kkatia.behancer.common.RefreshOwner;
 import com.kkatia.behancer.common.Refreshable;
 import com.kkatia.behancer.data.Storage;
 import com.kkatia.behancer.data.model.user.User;
+import com.kkatia.behancer.utils.ApiUtils;
 import com.kkatia.behancer.utils.DateUtils;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
-public class ProfileFragment  extends PresenterFragment<ProfilePresenter> implements ProfileView,Refreshable {
+public class ProfileFragment extends Fragment implements Refreshable {
 
     public static final String PROFILE_KEY = "PROFILE_KEY";
 
@@ -29,8 +34,7 @@ public class ProfileFragment  extends PresenterFragment<ProfilePresenter> implem
     private View mProfileView;
     private String mUsername;
     private Storage mStorage;
-
-    private ProfilePresenter mPresenter;
+    private Disposable mDisposable;
 
     private ImageView mProfileImage;
     private TextView mProfileName;
@@ -80,31 +84,41 @@ public class ProfileFragment  extends PresenterFragment<ProfilePresenter> implem
         if (getActivity() != null) {
             getActivity().setTitle(mUsername);
         }
-        mPresenter=new ProfilePresenter(this,mStorage);
+
         mProfileView.setVisibility(View.VISIBLE);
+
         onRefreshData();
     }
 
     @Override
     public void onRefreshData() {
-        mPresenter.getProfile(mUsername);
+        getProfile();
     }
 
-    @Override
-    protected ProfilePresenter getPresenter() {
-        return mPresenter;
+    private void getProfile() {
+        mDisposable = ApiUtils.getApiService().getUserInfo(mUsername)
+                .subscribeOn(Schedulers.io())
+                .doOnSuccess(response -> mStorage.insertUser(response))
+                .onErrorReturn(throwable ->
+                        ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ?
+                                mStorage.getUser(mUsername) :
+                                null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> mRefreshOwner.setRefreshState(true))
+                .doFinally(() -> mRefreshOwner.setRefreshState(false))
+                .subscribe(
+                        response -> {
+                            mErrorView.setVisibility(View.GONE);
+                            mProfileView.setVisibility(View.VISIBLE);
+                            bind(response.getUser());
+                        },
+                        throwable -> {
+                            mErrorView.setVisibility(View.VISIBLE);
+                            mProfileView.setVisibility(View.GONE);
+                        });
     }
 
-    @Override
-    public void onDetach() {
-        mStorage = null;
-        mRefreshOwner = null;
-        mPresenter.disposeAll();
-        super.onDetach();
-    }
-
-    @Override
-    public void showProfile(User user) {
+    private void bind(User user) {
         Picasso.get()
                 .load(user.getImage().getPhotoUrl())
                 .fit()
@@ -115,28 +129,12 @@ public class ProfileFragment  extends PresenterFragment<ProfilePresenter> implem
     }
 
     @Override
-    public void showRefresh() {
-        mRefreshOwner.setRefreshState(true);
-    }
-
-    @Override
-    public void hideRefresh() {
-        mRefreshOwner.setRefreshState(false);
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showError() {
-        mErrorView.setVisibility(View.VISIBLE);
-        mProfileView.setVisibility(View.GONE);
+    public void onDetach() {
+        mStorage = null;
+        mRefreshOwner = null;
+        if (mDisposable != null) {
+            mDisposable.dispose();
+        }
+        super.onDetach();
     }
 }

@@ -1,10 +1,13 @@
 package com.kkatia.behancer.ui.profile;
 
+import com.kkatia.behancer.AppDelegate;
+import com.kkatia.behancer.common.RefreshActivity;
 import com.kkatia.behancer.common.SingleFragmentActivity;
+import com.kkatia.behancer.data.Storage;
 
 import androidx.fragment.app.Fragment;
 
-public class ProfileActivity  extends SingleFragmentActivity {
+public class ProfileActivity  extends RefreshActivity implements Storage.StorageOwner {
 
     public static final String USERNAME_KEY = "USERNAME_KEY";
 
@@ -15,5 +18,14 @@ public class ProfileActivity  extends SingleFragmentActivity {
         }
         throw new IllegalStateException("getIntent cannot be null");
     }
+
+    @Override
+    public Storage obtainStorage() {
+        return ((AppDelegate) getApplicationContext()).getStorage();
+    }
+
+
 }
+
+
 
