@@ -36,10 +36,10 @@ public abstract class SingleFragmentActivity extends AppCompatActivity
 
     protected abstract Fragment getFragment();
 
-    @Override
-    public Storage obtainStorage() {
-        return ((AppDelegate) getApplicationContext()).getStorage();
+    protected int getLayout() {
+        return R.layout.ac_container;
     }
+
 
     public void changeFragment(Fragment fragment) {
         boolean addToBackStack = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer) != null;

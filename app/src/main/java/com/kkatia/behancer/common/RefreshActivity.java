@@ -22,10 +22,10 @@ public abstract class RefreshActivity extends SingleFragmentActivity implements 
         mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
-//    @Override
-//    protected int getLayout() {
-//        return R.layout.ac_swipe_container;
-//    }
+    @Override
+    protected int getLayout() {
+        return R.layout.ac_swipe_container;
+    }
 
     @Override
     public void onRefresh() {
