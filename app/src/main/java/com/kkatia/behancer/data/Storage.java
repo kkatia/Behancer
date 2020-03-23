@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 /**
  * Created by Vladislav Falzan.
@@ -27,7 +30,10 @@ public class Storage {
     }
 
     public void insertProjects(ProjectResponse response) {
-        List<Project> projects = response.getProjects();
+     insertProjects( response.getProjects());
+
+    }
+public void insertProjects(List<Project> projects) {
         mBehanceDao.insertProjects(projects);
 
        List<Owner> owners = getOwners(projects);
@@ -65,6 +71,11 @@ public class Storage {
     public LiveData<List<RichProject>> getProjectsLive(){
         return mBehanceDao.getProjectsLive();
     }
+    public LiveData<PagedList<RichProject>> getProjectsPaged(){
+//        return mBehanceDao.getProjectsLive();
+        return new LivePagedListBuilder<>(mBehanceDao.getProjectsPaged(),10).build();
+    }
+
     public void insertUser(UserResponse response) {
         User user = response.getUser();
         Image image = user.getImage();

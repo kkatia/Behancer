@@ -2,18 +2,17 @@ package com.kkatia.behancer.ui.projects;
 
 import com.kkatia.behancer.BuildConfig;
 import com.kkatia.behancer.data.Storage;
-import com.kkatia.behancer.data.model.project.Project;
+import com.kkatia.behancer.data.model.project.ProjectResponse;
+import com.kkatia.behancer.data.model.project.RichProject;
 import com.kkatia.behancer.utils.ApiUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import androidx.databinding.ObservableArrayList;
-import androidx.databinding.ObservableBoolean;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.paging.PagedList;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -21,45 +20,74 @@ public class ProjectsViewModel extends ViewModel {
     private Disposable mDisposable;
     private Storage mStorage;
     private ProjectsAdapter.OnItemClickListener mOnItemClickListener;
-    private MutableLiveData<Boolean> mIsErrorVisible =new MutableLiveData<Boolean>();
-    private MutableLiveData<Boolean> mIsLoading =new MutableLiveData<Boolean>();
-   private MutableLiveData<List<Project>> mProjects=new MutableLiveData<>();
+    private MutableLiveData<Boolean> mIsErrorVisible = new MutableLiveData<Boolean>();
+    private MutableLiveData<Boolean> mIsLoading = new MutableLiveData<Boolean>();
+    private LiveData<PagedList<RichProject>> mProjects = new MutableLiveData<>();
 
-private SwipeRefreshLayout.OnRefreshListener mOnRefreshListener=new SwipeRefreshLayout.OnRefreshListener() {
-    @Override
-    public void onRefresh() {
-        loadProjects();
-    }
-};
+    private SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            updateProjects();
+        }
+    };
 
-    public ProjectsViewModel(Storage storage, ProjectsAdapter.OnItemClickListener onItemClickListener){
-        mStorage=storage;
+    public ProjectsViewModel(Storage storage, ProjectsAdapter.OnItemClickListener onItemClickListener) {
+        mStorage = storage;
 
         mOnItemClickListener = onItemClickListener;
-        mProjects.setValue(new ArrayList<>());
-        loadProjects();
+
+//        mProjects = mStorage.getProjectsLive();
+        mProjects = mStorage.getProjectsPaged();
+        updateProjects();
     }
-    public void loadProjects() {
-        mDisposable = ApiUtils.getApiService().getProjects(BuildConfig.API_QUERY)
-                .doOnSuccess(responce -> mStorage.insertProjects(responce))
-                .onErrorReturn(throwable ->
-                        ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ? mStorage.getProjects() : null)
+
+//
+//    public void loadProjects() {
+//        mDisposable = ApiUtils.getApiService().getProjects(BuildConfig.API_QUERY)
+//                .doOnSuccess(response -> mStorage.insertProjects(response))
+//                .onErrorReturn(throwable ->
+//                        ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ? mStorage.getProjects() : null)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnSubscribe(disposable -> mIsLoading.postValue(true))
+//                .doFinally(() -> mIsLoading.postValue(false))
+//                .subscribe(
+//                        response -> {
+//                            mIsErrorVisible.postValue(false);
+//                            mProjects.postValue(response.getProjects());
+//                            },
+//                        throwable -> {
+//                         mIsErrorVisible.postValue(true);
+//                        }
+//                );
+//    }
+//
+
+    private void updateProjects() {
+//        mDisposable = ApiUtils.getApiService().getProjects(BuildConfig.API_QUERY)
+        mDisposable = ApiUtils.getApiService().getProjects("dog")
+                .map(ProjectResponse::getProjects)
+                .doOnSuccess(response -> mIsErrorVisible.postValue(false)
+                )
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> mIsLoading.postValue(true))
                 .doFinally(() -> mIsLoading.postValue(false))
                 .subscribe(
                         response -> {
-                            mIsErrorVisible.postValue(false);
-                            mProjects.postValue(response.getProjects());
-                            },
+                            mStorage.insertProjects(response);
+                        },
                         throwable -> {
-                         mIsErrorVisible.postValue(true);
+                            mIsErrorVisible.postValue(true);
+                            boolean value = mProjects.getValue() == null || mProjects.getValue().size() == 0;
+                            mIsErrorVisible.postValue(value);
+//                                    ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ? mStorage.getProjects() : null
+
                         }
                 );
     }
-@Override
-    public void onCleared(){
+
+    @Override
+    public void onCleared() {
         mStorage = null;
         if (mDisposable != null) {
             mDisposable.dispose();
@@ -69,10 +97,12 @@ private SwipeRefreshLayout.OnRefreshListener mOnRefreshListener=new SwipeRefresh
     public ProjectsAdapter.OnItemClickListener getOnItemClickListener() {
         return mOnItemClickListener;
     }
-    public MutableLiveData<Boolean> getIsErrorVisible(){
+
+    public MutableLiveData<Boolean> getIsErrorVisible() {
         return mIsErrorVisible;
     }
-    public MutableLiveData<Boolean> getIsLoading(){
+
+    public MutableLiveData<Boolean> getIsLoading() {
         return mIsLoading;
     }
 
@@ -80,7 +110,7 @@ private SwipeRefreshLayout.OnRefreshListener mOnRefreshListener=new SwipeRefresh
         return mOnRefreshListener;
     }
 
-    public MutableLiveData<List<Project>> getProjects() {
+    public LiveData<PagedList<RichProject>> getProjects() {
         return mProjects;
     }
 }

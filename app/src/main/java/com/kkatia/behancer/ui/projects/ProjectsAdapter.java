@@ -6,21 +6,26 @@ import android.view.ViewGroup;
 
 import com.kkatia.behancer.R;
 import com.kkatia.behancer.data.model.project.Project;
+import com.kkatia.behancer.data.model.project.RichProject;
 import com.kkatia.behancer.databinding.ProjectBinding;
 
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
+//public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
+public class ProjectsAdapter extends PagedListAdapter<RichProject,ProjectsHolder> {
 
-    @NonNull
-    private final List<Project> mProjects;
+//    @NonNull
+//    private final List<RichProject> mProjects;
     private final OnItemClickListener mOnItemClickListener;
 
-    public ProjectsAdapter(List<Project> projects, OnItemClickListener onItemClickListener) {
-        mProjects = projects;
+    public ProjectsAdapter( OnItemClickListener onItemClickListener) {
+super(CALLBACK);
         mOnItemClickListener = onItemClickListener;
     }
 
@@ -38,16 +43,28 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ProjectsHolder holder, int position) {
-        Project project = mProjects.get(position);
-        holder.bind(project, mOnItemClickListener);
+        RichProject project = getItem(position);
+        if(project!=null){
+        holder.bind(project, mOnItemClickListener);}
+    }
+
+//    @Override
+//    public int getItemCount() {
+//
+//        return mProjects==null?0: mProjects.size();
+//    }
+
+private static final DiffUtil.ItemCallback<RichProject> CALLBACK=new DiffUtil.ItemCallback<RichProject>() {
+    @Override
+    public boolean areItemsTheSame(@NonNull RichProject oldItem, @NonNull RichProject newItem) {
+        return oldItem.mProject.getId()==newItem.mProject.getId();
     }
 
     @Override
-    public int getItemCount() {
-        return mProjects.size();
+    public boolean areContentsTheSame(@NonNull RichProject oldItem, @NonNull RichProject newItem) {
+        return (Objects.equals(oldItem, newItem));
     }
-
-
+};
     public interface OnItemClickListener {
 
         void onItemClick(String username);

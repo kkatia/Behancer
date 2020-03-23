@@ -10,6 +10,7 @@ import com.kkatia.behancer.data.model.user.User;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -36,8 +37,12 @@ public interface BehanceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertImage(Image image);
 
-    @Query("select * from project")
+    @Query("select * from project order by published_on")
     LiveData<List<RichProject>> getProjectsLive();
+
+    @Query("select * from project order by published_on")
+    DataSource.Factory<Integer,RichProject> getProjectsPaged();
+//м DataSource.Factory <Integer, RichProject>
 
     @Query("select * from project")
     List<Project> getProjects();

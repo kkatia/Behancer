@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.kkatia.behancer.R;
 import com.kkatia.behancer.data.model.project.Project;
+import com.kkatia.behancer.data.model.project.RichProject;
 import com.kkatia.behancer.databinding.ProjectBinding;
 import com.kkatia.behancer.utils.DateUtils;
 import com.squareup.picasso.Picasso;
@@ -23,7 +24,7 @@ public class ProjectsHolder extends RecyclerView.ViewHolder {
         mProjectBinding=binding;
     }
 
-    public void bind(Project item, ProjectsAdapter.OnItemClickListener onItemClickListener) {
+    public void bind(RichProject item, ProjectsAdapter.OnItemClickListener onItemClickListener) {
         mProjectBinding.setProject(new ProjectsListItemViewModel(item));
         mProjectBinding.setOnItemClickListener(onItemClickListener);
         mProjectBinding.executePendingBindings();

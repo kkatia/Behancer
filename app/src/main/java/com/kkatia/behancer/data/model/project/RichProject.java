@@ -7,10 +7,10 @@ import androidx.room.Relation;
 
 public class RichProject {
     @Embedded
-    private Project mProject;
+    public Project mProject;
 
     @Relation(entity = Owner.class, entityColumn = "project_id",parentColumn = "id")
-    private List<Owner> mOwners;
+    public List<Owner> mOwners;
 
     public void setProject(Project mProject) {
         this.mProject = mProject;
