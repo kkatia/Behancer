@@ -3,11 +3,13 @@ package com.kkatia.behancer.data.database;
 import com.kkatia.behancer.data.model.project.Cover;
 import com.kkatia.behancer.data.model.project.Owner;
 import com.kkatia.behancer.data.model.project.Project;
+import com.kkatia.behancer.data.model.project.RichProject;
 import com.kkatia.behancer.data.model.user.Image;
 import com.kkatia.behancer.data.model.user.User;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -35,10 +37,10 @@ public interface BehanceDao {
     void insertImage(Image image);
 
     @Query("select * from project")
-    List<Project> getProjects();
+    LiveData<List<RichProject>> getProjectsLive();
 
-    @Query("select * from cover where project_id = :projectId")
-    Cover getCoverFromProject(int projectId);
+    @Query("select * from project")
+    List<Project> getProjects();
 
     @Query("select * from owner where project_id = :projectId")
     List<Owner> getOwnersFromProject(int projectId);

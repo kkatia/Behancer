@@ -1,18 +1,18 @@
 package com.kkatia.behancer.data;
 
-import android.util.Pair;
-
 import com.kkatia.behancer.data.database.BehanceDao;
-import com.kkatia.behancer.data.model.project.Cover;
 import com.kkatia.behancer.data.model.project.Owner;
 import com.kkatia.behancer.data.model.project.Project;
 import com.kkatia.behancer.data.model.project.ProjectResponse;
+import com.kkatia.behancer.data.model.project.RichProject;
 import com.kkatia.behancer.data.model.user.Image;
 import com.kkatia.behancer.data.model.user.User;
 import com.kkatia.behancer.data.model.user.UserResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.lifecycle.LiveData;
 
 /**
  * Created by Vladislav Falzan.
@@ -30,36 +30,29 @@ public class Storage {
         List<Project> projects = response.getProjects();
         mBehanceDao.insertProjects(projects);
 
-        Pair<List<Cover>, List<Owner>> assembled = assemble(projects);
+       List<Owner> owners = getOwners(projects);
 
         mBehanceDao.clearCoverTable();
-        mBehanceDao.insertCovers(assembled.first);
         mBehanceDao.clearOwnerTable();
-        mBehanceDao.insertOwners(assembled.second);
+        mBehanceDao.insertOwners(owners);
     }
 
-    private Pair<List<Cover>, List<Owner>> assemble(List<Project> projects) {
+    private  List<Owner> getOwners(List<Project> projects) {
 
-        List<Cover> covers = new ArrayList<>();
         List<Owner> owners = new ArrayList<>();
         for (int i = 0; i < projects.size(); i++) {
-            Cover cover = projects.get(i).getCover();
-            cover.setId(i);
-            cover.setProjectId(projects.get(i).getId());
-            covers.add(cover);
 
             Owner owner = projects.get(i).getOwners().get(0);
             owner.setId(i);
             owner.setProjectId(projects.get(i).getId());
             owners.add(owner);
         }
-        return new Pair<>(covers, owners);
+        return  owners;
     }
 
     public ProjectResponse getProjects() {
         List<Project> projects = mBehanceDao.getProjects();
         for (Project project : projects) {
-            project.setCover(mBehanceDao.getCoverFromProject(project.getId()));
             project.setOwners(mBehanceDao.getOwnersFromProject(project.getId()));
         }
 
@@ -69,6 +62,9 @@ public class Storage {
         return response;
     }
 
+    public LiveData<List<RichProject>> getProjectsLive(){
+        return mBehanceDao.getProjectsLive();
+    }
     public void insertUser(UserResponse response) {
         User user = response.getUser();
         Image image = user.getImage();
