@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.kkatia.behancer.R;
 import com.kkatia.behancer.data.Storage;
-import com.kkatia.behancer.databinding.ProjectBinding;
 import com.kkatia.behancer.databinding.ProjectsBinding;
 import com.kkatia.behancer.ui.profile.ProfileActivity;
 import com.kkatia.behancer.ui.profile.ProfileFragment;
@@ -17,7 +16,6 @@ import com.kkatia.behancer.ui.profile.ProfileFragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class ProjectsFragment extends Fragment{
 private ProjectsViewModel mProjectsViewModel;
@@ -31,12 +29,6 @@ private ProjectsAdapter.OnItemClickListener onItemClickListener=new ProjectsAdap
         startActivity(intent);
     }
 };
-//    private RecyclerView mRecyclerView;
-//    private View mErrorView;
-//    private ProjectsAdapter mProjectsAdapter;
-
-//    private SwipeRefreshLayout mSwipeRefreshLayout;
-
     public static ProjectsFragment newInstance() {
         return new ProjectsFragment();
     }
@@ -58,7 +50,6 @@ private ProjectsAdapter.OnItemClickListener onItemClickListener=new ProjectsAdap
         ProjectsBinding projectBinding=      ProjectsBinding.inflate(inflater,container,false);
    projectBinding.setVm(mProjectsViewModel);
    return projectBinding.getRoot();
-//        return inflater.inflate(R.layout.fr_projects, container, false);
     }
 
 

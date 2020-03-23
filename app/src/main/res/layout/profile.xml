@@ -9,7 +9,7 @@
 <!--    </data>-->
     <data>
         <variable
-            name="profile"
+            name="profileViewModel"
             type="com.kkatia.behancer.ui.profile.ProfileViewModel"/>
     </data>
 <RelativeLayout
@@ -24,12 +24,12 @@
         android:layout_width="128dp"
         android:layout_height="128dp"
         android:contentDescription="@string/content_description_details"
-        app:imageUrl="@{profile.imageUrl}"/>
+        app:imageUrl="@{profileViewModel.imageUrl}"/>
 
 
     <TextView
         android:id="@+id/tv_display_name_details"
-        android:text="@{profile.profileName}"
+        android:text="@{profileViewModel.profileName}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/iv_profile"
@@ -42,7 +42,7 @@
 
     <TextView
         android:id="@+id/tv_username_details"
-    android:text="@{profile.profileName}"
+    android:text="@{profileViewModel.profileName}"
     android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/tv_display_name_details"
@@ -51,7 +51,7 @@
 
     <TextView
         android:id="@+id/tv_created_on_details"
-    android:text="@{profile.profileCreatedOn}"
+    android:text="@{profileViewModel.profileCreatedOn}"
     android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/tv_username_details"
@@ -60,7 +60,7 @@
 
     <TextView
         android:id="@+id/tv_location_details"
-        android:text="@{profile.profileLocation}"
+        android:text="@{profileViewModel.profileLocation}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/tv_created_on_details"

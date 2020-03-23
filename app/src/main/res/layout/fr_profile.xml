@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <data>
+<!--    <data class="ProfileBinding">-->
+        <import alias="V" type="android.view.View"></import>
+        <variable
+            name="profilevm"
+            type="com.kkatia.behancer.ui.profile.ProfileViewModel" />
+    </data>
+<!--   -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        bind:onRefresh="@{profilevm.onRefreshListener}"
+        bind:refreshState="@{profilevm.isLoading}"
+    >
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <include
-        layout="@layout/v_profile"
-        android:visibility="gone" />
+        layout="@layout/profile"
 
+        android:visibility="@{profilevm.isErrorVisible?V.GONE:V.VISIBLE}" />
+    <!--        bind:profiledata="@{profilevm}"-->
     <include
         layout="@layout/v_error"
-        android:visibility="gone" />
+        android:visibility="@{profilevm.isErrorVisible?V.VISIBLE:V.GONE}"/>
 
 </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</layout>

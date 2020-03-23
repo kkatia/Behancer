@@ -1,14 +1,21 @@
 package com.kkatia.behancer.utils;
 
+import android.text.Layout;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.kkatia.behancer.data.model.project.Project;
+import com.kkatia.behancer.data.model.user.User;
+import com.kkatia.behancer.ui.profile.ProfileViewModel;
 import com.kkatia.behancer.ui.projects.ProjectsAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import androidx.databinding.BindingAdapter;
+import androidx.databinding.BindingConversion;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -24,6 +31,14 @@ public class CustomBindingAdapter {
       recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setAdapter(mProjectsAdapter);
     }
+
+//    @BindingAdapter({"bind:profiledata"})
+//    public static void configureView(ProfileViewModel profileViewModel){
+//
+//    }
+////view.setLayoutManager(new LinearLayoutManager( view.getContext()));
+//
+//    }
     @BindingAdapter({"bind:refreshState","bind:onRefresh"})
     public static void configureSwipeRefreshLayout(SwipeRefreshLayout swipeRefreshLayout, boolean isLoading, SwipeRefreshLayout.OnRefreshListener onRefreshListener){
 

@@ -27,21 +27,5 @@ public class ProjectsHolder extends RecyclerView.ViewHolder {
         mProjectBinding.setProject(new ProjectsListItemViewModel(item));
         mProjectBinding.setOnItemClickListener(onItemClickListener);
         mProjectBinding.executePendingBindings();
-
-//        Picasso.get().load(item.getCover().getPhotoUrl())
-//                .fit()
-//                .into(mImage);
-//
-//        mName.setText(item.getName());
-//        mUsername.setText(item.getOwners().get(FIRST_OWNER_INDEX).getUsername());
-//        mPublishedOn.setText(DateUtils.format(item.getPublishedOn()));
-//
-//        if (onItemClickListener != null) {
-//            itemView.setOnClickListener(v -> onItemClickListener.onItemClick(
-//                    item.getOwners()
-//                            .get(FIRST_OWNER_INDEX)
-//                            .getUsername()
-//            ));
-//        }
     }
 }
