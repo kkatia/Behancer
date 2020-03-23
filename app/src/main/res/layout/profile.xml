@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+  >
+<!--    <data class="ProfileBinding">-->
+<!--        <variable-->
+<!--            name="profile"-->
+<!--            type="com.kkatia.behancer.ui.profile.ProfileViewModel" />-->
+<!--    </data>-->
+    <data>
+        <variable
+            name="profile"
+            type="com.kkatia.behancer.ui.profile.ProfileViewModel"/>
+    </data>
+<RelativeLayout
     android:id="@+id/view_profile"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,10 +23,13 @@
         android:id="@+id/iv_profile"
         android:layout_width="128dp"
         android:layout_height="128dp"
-        android:contentDescription="@string/content_description_details" />
+        android:contentDescription="@string/content_description_details"
+        app:imageUrl="@{profile.imageUrl}"/>
+
 
     <TextView
         android:id="@+id/tv_display_name_details"
+        android:text="@{profile.profileName}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/iv_profile"
@@ -26,7 +42,8 @@
 
     <TextView
         android:id="@+id/tv_username_details"
-        android:layout_width="wrap_content"
+    android:text="@{profile.profileName}"
+    android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/tv_display_name_details"
         android:layout_alignStart="@id/tv_display_name_details"
@@ -34,7 +51,8 @@
 
     <TextView
         android:id="@+id/tv_created_on_details"
-        android:layout_width="wrap_content"
+    android:text="@{profile.profileCreatedOn}"
+    android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/tv_username_details"
         android:layout_alignStart="@id/tv_username_details"
@@ -42,6 +60,7 @@
 
     <TextView
         android:id="@+id/tv_location_details"
+        android:text="@{profile.profileLocation}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/tv_created_on_details"
@@ -49,3 +68,4 @@
         android:layout_below="@id/tv_created_on_details" />
 
 </RelativeLayout>
+</layout>
