@@ -8,20 +8,19 @@ import com.kkatia.behancer.R;
 import com.kkatia.behancer.data.model.project.Project;
 import com.kkatia.behancer.databinding.ProjectBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ProjectsAdapter  extends RecyclerView.Adapter<ProjectsHolder> {
+public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsHolder> {
 
     @NonNull
     private final List<Project> mProjects;
     private final OnItemClickListener mOnItemClickListener;
 
-    public ProjectsAdapter(List<Project> projects,OnItemClickListener onItemClickListener) {
-       mProjects=projects;
+    public ProjectsAdapter(List<Project> projects, OnItemClickListener onItemClickListener) {
+        mProjects = projects;
         mOnItemClickListener = onItemClickListener;
     }
 
@@ -31,11 +30,10 @@ public class ProjectsAdapter  extends RecyclerView.Adapter<ProjectsHolder> {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.li_projects, parent, false);
 
-        ProjectBinding binding=
-        ProjectBinding.inflate(inflater,parent,false);
+        ProjectBinding binding =
+                ProjectBinding.inflate(inflater, parent, false);
 
         return new ProjectsHolder(binding);
-//        return new ProjectsHolder(view);
     }
 
     @Override
@@ -48,7 +46,6 @@ public class ProjectsAdapter  extends RecyclerView.Adapter<ProjectsHolder> {
     public int getItemCount() {
         return mProjects.size();
     }
-
 
 
     public interface OnItemClickListener {
