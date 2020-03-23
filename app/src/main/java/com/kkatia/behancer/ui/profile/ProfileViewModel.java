@@ -1,5 +1,7 @@
 package com.kkatia.behancer.ui.profile;
 
+import android.util.Log;
+
 import com.kkatia.behancer.BuildConfig;
 import com.kkatia.behancer.data.Storage;
 import com.kkatia.behancer.data.model.user.User;
@@ -41,7 +43,7 @@ public class ProfileViewModel {
 
     public void loadProfile() {
         mDisposable = ApiUtils.getApiService().getUserInfo(BuildConfig.API_QUERY)
-                .doOnSuccess(responce -> mStorage.insertUser(responce))
+                .doOnSuccess(response -> mStorage.insertUser(response))
                 .onErrorReturn(throwable ->
                         ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass()) ? mStorage.getUser(mUserName) : null)
                 .subscribeOn(Schedulers.io())
@@ -52,6 +54,7 @@ public class ProfileViewModel {
                         response -> {
                             mIsErrorVisible.set(false);
                             bind(response.getUser());
+                            Log.i("my!",response.getUser().getDisplayName(),null);
                         },
                         throwable -> {
                             mIsErrorVisible.set(true);
